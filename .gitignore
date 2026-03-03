@@ -46,3 +46,7 @@ $RECYCLE.BIN/
 **/__pycache__/
 **/.venv/
 **/venv/
+
+# GitHub Actions deploy key (DO NOT COMMIT)
+gha_checkout_key
+gha_checkout_key.pub
