@@ -2,13 +2,11 @@ name: Deploy to Salesforce
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -16,10 +14,15 @@ jobs:
       - name: Install Salesforce CLI
         run: npm install -g @salesforce/cli
 
+      - name: CLI Version
+        run: sf --version
+
       - name: Authenticate DevOrgB
         run: |
-          echo "${{ secrets.SF_AUTH_URL }}" > auth.txt
-          sf org login sfdx-url -f auth.txt -a DevOrgB
+          printf "%s" "${{ secrets.SF_AUTH_URL }}" > auth.txt
+          sf org login sfdx-url --sfdx-url-file auth.txt --alias DevOrgB
+          sf org display --target-org DevOrgB
 
       - name: Deploy Metadata
-        run: sf project deploy start --target-org DevOrgB --wait 10
+        run: |
+          sf project deploy start --target-org DevOrgB --wait 30 --verbose
