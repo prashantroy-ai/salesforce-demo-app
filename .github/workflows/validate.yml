@@ -1,0 +1,29 @@
+name: Validate PR (No Deploy)
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ssh-key: ${{ secrets.GH_DEPLOY_KEY }}
+          fetch-depth: 1
+
+      - name: Install Salesforce CLI
+        run: npm install -g @salesforce/cli
+
+      - name: Authenticate DevOrgB
+        run: |
+          printf "%s" "${{ secrets.SF_AUTH_URL }}" | tr -d '\r\n' > auth.txt
+          sf org login sfdx-url --sfdx-url-file auth.txt --alias DevOrgB
+          sf org display --target-org DevOrgB
+
+      - name: Validate Deployment (No Changes Applied)
+        run: |
+          sf project deploy start --target-org DevOrgB --dry-run --test-level RunLocalTests --wait 30 --verbose
