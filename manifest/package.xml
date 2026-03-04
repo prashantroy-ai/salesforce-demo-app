@@ -6,7 +6,7 @@
     <name>ApexClass</name>
   </types>
   <types>
-    <members>Project_Auto_Status_Flow</members>
+    <members>Project_Auto_Completion_Flow</members>
     <name>Flow</name>
   </types>
   <version>60.0</version>
